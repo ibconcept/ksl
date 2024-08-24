@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR with Tesseract.js</title>
+</head>
+<body>
+    <input type="file" id="upload" />
+    <div id="output"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@latest"></script>
+    <script>
+        document.getElementById('upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                Tesseract.recognize(
+                    file,
+                    'eng', // Language code
+                    { logger: info => console.log(info) } // Optional logger
+                ).then(({ data: { text } }) => {
+                    document.getElementById('output').textContent = text;
+                }).catch(err => {
+                    console.error(err);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

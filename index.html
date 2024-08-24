@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>learn to write</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@material-ui/core@latest/dist/material-ui.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; 
+            overflow-y: hidden;
+                background-color: #e9a5d8;
+        }
+        #canvas {
+            border: 12px solid #9b7700;
+            background-color: #969696; 
+            color: #f5f5f5;
+            margin-bottom: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 2px 3px 5px #969696;
+
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .button {
+            background-color: rgb(37, 179, 37);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #3700b3;
+        }
+        .clear-button {
+            background-color: #f44336;
+        }
+        .clear-button:hover {
+            background-color: #d32f2f;
+        }
+        .output {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .output span {
+            font-size: 24px;
+        }
+        .output .correct {
+            color: #4caf50;
+        }
+        .output .incorrect {
+            color: #f44336;
+        }
+          /* Responsive adjustments for mobile screens */
+    @media (max-width: 768px) {
+        #canvas {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            max-height: 400px; /* Ensure the height doesn't exceed a certain value */
+        }
+    }
+
+    @media (max-width: 480px) {
+        #canvas {
+            max-height: 300px; /* Adjust height for very small screens */
+        }
+    }
+    </style>
+</head>
+<body>
+    <span id="feedbackText">Draw letter A</span>
+    <canvas  id="canvas" height="400px" width="800px"  ></canvas>
+    <div class="container">
+      
+        <div>
+            <button  class="clearbutton"><</button>
+            <button id="submitButton" class="button">ENTER</button>
+    
+            <button id="clearButton" class="clear-button button">ERASE</button>
+         
+           <a href="#"> <button  class="clearbutton">></button> </a>
+        </div>
+        <div id="output" class="output">
+            <span id="feedbackIcon"></span>
+            <span id="feedbackText">Draw something above and click submit.</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const submitButton = document.getElementById('submitButton');
+        const clearButton = document.getElementById('clearButton');
+        const output = document.getElementById('output');
+        const feedbackIcon = document.getElementById('feedbackIcon');
+        const feedbackText = document.getElementById('feedbackText');
+
+        let drawing = false;
+        let lastX, lastY;
+
+        canvas.addEventListener('mousedown', (e) => {
+            drawing = true;
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (drawing) {
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                lastX = e.offsetX;
+                lastY = e.offsetY;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            drawing = false;
+        });
+
+        clearButton.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            feedbackIcon.innerHTML = '';
+            feedbackText.textContent = 'Draw something above and click submit.';
+        });
+
+        submitButton.addEventListener('click', async () => {
+            const imageData = canvas.toDataURL('image/png').split(',')[1];
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageData })
+                });
+                const result = await response.json();
+                const text = result.responses[0].textAnnotations[0].description.trim();
+
+                // Example expected answer (change this as needed)
+                const expectedText = 'A'; 
+
+                if (text === expectedText) {
+                    feedbackIcon.innerHTML = '✔';
+                    feedbackIcon.className = 'correct';
+                    feedbackText.textContent = `Correct! You drew: ${text}`;
+                } else {
+                    feedbackIcon.innerHTML = '✘';
+                    feedbackIcon.className = 'incorrect';
+                    feedbackText.textContent = `Incorrect. You drew: ${text}`;
+                }
+            } catch (error) {
+                feedbackIcon.innerHTML = '✘';
+                feedbackIcon.className = 'incorrect';
+                feedbackText.textContent = 'Error processing image.';
+            }
+        });
+    </script>
+</body>
+</html>
