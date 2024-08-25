@@ -44,7 +44,7 @@ canvas.addEventListener('mouseup', () => {
 // Clear button functionality
 clearButton.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    output.textContent = 'Draw something above and click submit.';
+    output.textContent = 'Draw something above and click ENTER.';
 });
 
 // Submit button functionality with ml5.js
