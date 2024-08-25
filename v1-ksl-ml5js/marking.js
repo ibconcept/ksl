@@ -6,7 +6,7 @@ const output = document.getElementById('output');
 
 // Initialize the ml5 image classifier with a pre-trained model
 let classifier;
-const modelURL = 'https://teachablemachine.withgoogle.com/models/YOUR_MODEL_URL/model.json'; // Replace with your model URL
+const modelURL = 'https://storage.googleapis.com/tm-models/model.json'; // Replace with your model URL
 
 function setup() {
     classifier = ml5.imageClassifier(modelURL, modelLoaded);
