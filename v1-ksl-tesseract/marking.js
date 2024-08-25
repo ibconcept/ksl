@@ -3,13 +3,23 @@ const ctx = canvas.getContext('2d');
 const submitButton = document.getElementById('submitButton');
 const clearButton = document.getElementById('clearButton');
 const output = document.getElementById('output');
-const feedbackIcon = document.getElementById('feedbackIcon');
-const feedbackText = document.getElementById('feedbackText');
 
+// Initialize the ml5 image classifier with a pre-trained model
+let classifier;
+const modelURL = 'https://teachablemachine.withgoogle.com/models/YOUR_MODEL_URL/model.json'; // Replace with your model URL
+
+function setup() {
+    classifier = ml5.imageClassifier(modelURL, modelLoaded);
+}
+
+function modelLoaded() {
+    console.log('Model Loaded!');
+}
+
+// Drawing logic
 let drawing = false;
 let lastX, lastY;
 
-// Drawing logic
 canvas.addEventListener('mousedown', (e) => {
     drawing = true;
     lastX = e.offsetX;
@@ -34,39 +44,42 @@ canvas.addEventListener('mouseup', () => {
 // Clear button functionality
 clearButton.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    feedbackIcon.innerHTML = '';
-    feedbackText.textContent = 'Draw something above and click submit.';
+    output.textContent = 'Draw something above and click submit.';
 });
 
-// Submit button functionality with Tesseract OCR
-submitButton.addEventListener('click', async () => {
-    const imageData = canvas.toDataURL('image/png');
+// Submit button functionality with ml5.js
+submitButton.addEventListener('click', () => {
+    // Create a temporary smaller canvas
+    const smallCanvas = document.createElement('canvas');
+    const smallCtx = smallCanvas.getContext('2d');
+    const scaleFactor = 0.2; // Scale factor for resizing (20% of original size)
 
-    // Use Tesseract to recognize the text in the image
-    Tesseract.recognize(
-        imageData,
-        'eng',
-        { logger: info => console.log(info) } // Optional logging
-    ).then(({ data: { text } }) => {
-        const recognizedText = text.trim();
+    // Set dimensions of the smaller canvas
+    smallCanvas.width = canvas.width * scaleFactor;
+    smallCanvas.height = canvas.height * scaleFactor;
 
-        // Example predefined answers
-        const predefinedAnswers = ['A', 'B', 'C']; // List of acceptable answers
-        const expectedText = 'A'; // Example expected answer
+    // Draw the original canvas content onto the smaller canvas
+    smallCtx.drawImage(canvas, 0, 0, smallCanvas.width, smallCanvas.height);
 
-        if (predefinedAnswers.includes(recognizedText)) {
-            feedbackIcon.innerHTML = '✔';
-            feedbackIcon.className = 'correct';
-            feedbackText.textContent = `Correct! You drew: ${recognizedText}`;
-        } else {
-            feedbackIcon.innerHTML = '✘';
-            feedbackIcon.className = 'incorrect';
-            feedbackText.textContent = `Incorrect. You drew: ${recognizedText}`;
+    // Use the classifier to recognize the image
+    classifier.classify(smallCanvas, (error, results) => {
+        if (error) {
+            console.error(error);
+            output.textContent = 'Error processing image.';
+            return;
         }
-    }).catch(error => {
-        feedbackIcon.innerHTML = '✘';
-        feedbackIcon.className = 'incorrect';
-        feedbackText.textContent = 'Error processing image.';
-        console.error(error);
+
+        // Check the top result from the classifier
+        const label = results[0].label; // Replace with the expected label
+        const confidence = results[0].confidence;
+
+        if (label === 'ExpectedLabel' && confidence > 0.7) { // Replace 'ExpectedLabel' with the actual expected label
+            output.textContent = '✔ Correct!';
+        } else {
+            output.textContent = '✘ Try Again.';
+        }
     });
 });
+
+// Initialize the ml5 model
+setup();
