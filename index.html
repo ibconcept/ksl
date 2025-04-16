@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn to Write</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --clr-primary: #007bff;
+            --clr-secondary: #ff4b9f;
+            --clr-accent: plum;
+            --clr-background-main: aliceblue;
+            --clr-primary-lighter: yellow;
+            --clr-text-light: #fff;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            display:flex ;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            scroll-behavior: smooth;
+            overflow-y: hidden;
+            background-color: var(--clr-background-main);
+        }
+        #canvas {
+            border: 12px solid var(--clr-secondary);
+            background-color: var(--clr-primary-lighter);
+            margin : 20px;
+            box-shadow: 2px 3px 5px var(--clr-accent);
+        }
+        button {
+            background-color: var(--clr-primary);
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+            font-weight: 900;
+            display: flex;
+            flex-direction: column;
+            color: var(--clr-text-light);
+        }
+        button:hover {
+            background-color: var(--clr-secondary);
+        }
+        .clear-button {
+            background-color: var(--clr-secondary);
+            border-radius: 15px;
+            font-weight: 900;
+            color: var(--clr-text-light);
+        }
+        .clear-button:hover {
+            background-color: var(--clr-primary-lighter);
+            color: var(--clr-primary);
+        }
+        #output {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--clr-secondary);
+        }
+        img {
+            position: fixed;
+            top: 30px;
+            left: 280px;
+            z-index: 1000;
+        }
+        h1 {
+            margin-bottom: 3px;
+            position: absolute;
+            font-weight: 900;
+            color: var(--clr-primary);
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            top: 0%;
+        }
+        .button2 {
+            margin: 63px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <img src="logo.png" width="100px" style="position: 0 0;" alt="ksl logo">
+    <h1>Question 1 Here!!</h1>
+    <a href="#">
+        <button >
+        <i class="fas fa-arrow-left"></i>
+    </button>
+    </a>
+    <canvas id="canvas" height="400px" width="800px"></canvas>
+    <a href="#">
+        <button class="button">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </a>
+    <div>
+        <button id="clearButton" class="button2 clear-button">
+            <i class="material-icons">delete</i> ERASE
+        </button>
+        <button id="submitButton" class="button2">
+            <i class="fas fa-check"></i> ENTER
+        </button>
+    </div>
+    <span id="output">
+    </span>
+    <script src="https://cdn.jsdelivr.net/npm/ml5@2.0.0/dist/ml5.min.js"></script>
+    <script src="marking.js"></script>
+</body>
+</html>
