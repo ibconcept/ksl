@@ -1,0 +1,94 @@
+:root {
+    --clr-primary: #007bff;
+    --clr-secondary: #ff4b9f;
+    --clr-accent: plum;
+    --clr-background-main: aliceblue;
+    --clr-primary-lighter: yellow;
+    --clr-text-light: #fff;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    display:flex ;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    scroll-behavior: smooth;
+    overflow-y: hidden;
+    background-color: var(--clr-background-main);
+}
+#canvas {
+    border: 12px solid var(--clr-secondary);
+    background-color: var(--clr-primary-lighter);
+    margin : 20px;
+    box-shadow: 2px 3px 5px var(--clr-accent);
+}
+button {
+    background-color: var(--clr-primary);
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: background-color 0.3s ease;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    color: var(--clr-text-light);
+}
+button:hover {
+    background-color: var(--clr-secondary);
+}
+.clear-button {
+    background-color: var(--clr-secondary);
+    border-radius: 15px;
+    font-weight: 900;
+    color: var(--clr-text-light);
+}
+.clear-button:hover {
+    background-color: var(--clr-primary-lighter);
+    color: var(--clr-primary);
+}
+#output {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--clr-secondary);
+}
+img {
+    position: fixed;
+    top: 30px;
+    left: 280px;
+    z-index: 1000;
+}
+h1 {
+    margin-bottom: 3px;
+    position: absolute;
+    font-weight: 900;
+    color: var(--clr-primary);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    top: 0%;
+}
+.button2 {
+    margin: 63px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (orientation: portrait) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: var(--clr-background-main);
+    }
+    body::before {
+        content: "Please rotate your device to landscape mode.";
+        font-size: 1.5em;
+        color: var(--clr-primary);
+        text-align: center;
+    }
+    #canvas, button, img, h1, #output {
+        display: none;
+    }
+}
